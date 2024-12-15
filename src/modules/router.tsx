@@ -12,7 +12,7 @@ export default function Router() {
         <Route path="/recipes" element={<ListPage />}>
           <Route path="/recipes/pudding" element={<PuddingModal />} />
         </Route>
-        <Route path="/recipes/:name" element={<DetailsPage />} />
+        <Route path="/recipes/pie" element={<DetailsPage />} />
       </Routes>
     </BrowserRouter>
   );

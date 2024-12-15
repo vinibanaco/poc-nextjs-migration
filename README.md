@@ -1,50 +1,21 @@
-# React + TypeScript + Vite
+# Migration to Next.js 15.1.0 - PoC
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Goal
 
-Currently, two official plugins are available:
+Learn how difficult it is to incrementally migrate a complex SPA, made with React + Vite + React Router, to Next.js, with the ultimate goal of allowing me to choose a framework to learn/master that has all the features I need and that incentivizes good project structure and architecture.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Methodology
 
-## Expanding the ESLint configuration
+I followed [the official guide](https://nextjs.org/docs/app/building-your-application/upgrading/from-vite) available in Next.js' docs.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Results: ❌ UNSUCCESSFUL
 
-- Configure the top-level `parserOptions` property like this:
+The guide is straightforward and easy to understand. I wasn't having any issues until I stumbled upon a major one: `useParams()` wasn't working.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+After some research I found [this discussion](https://github.com/vercel/next.js/discussions/64660) where people reported that `output: export` doesn't support the hook still. The issue is, to incrementally migrate an SPA to Next.js you HAVE to use this config to replicate SPA behavior -- single static HTML file with very little JS that processes everything client-side.
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+Some people mentioned in the post that using the legacy `/pages` folder (the default before v13) instead of `/app` solved the issue, but I don't want to commit to an older API that will eventually be discontinued.
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+## Final Thoughts
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+I wasn't expecting this at all, it is really unfortunate. Most production apps still run SPAs with Vite or Create React App and this issue makes the transition virtually impossible for most companies (until they fix it of course). The devs are aware of the issue and intend to fix it, but they haven't provided a timeline for when that will happen.
